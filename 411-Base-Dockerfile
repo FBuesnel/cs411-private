@@ -27,7 +27,7 @@
 # # -p maps the https port (443) from the host into the container
 
 # docker run -it \
-#            -v </path/to/container_storage>/container_storage:/usr/src/app \
+#            -v ./container_storage:/usr/src/app \
 #            -p 443:443 \
 #            --name my-411-container \
 #            411-base-image:1.0.0
