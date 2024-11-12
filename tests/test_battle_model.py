@@ -106,7 +106,7 @@ def test_get_battle_score(battle_model, sample_meal1):
     score = battle_model.get_battle_score(sample_meal1)
     expected_score = (
         sample_meal1.price * len(sample_meal1.cuisine)
-    ) - 2  # 'MED' difficulty modifier is 2
+    ) - 2
     assert (
         score == expected_score
     ), f"Expected score to be {expected_score} but got {score}"
