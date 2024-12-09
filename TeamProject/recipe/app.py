@@ -122,7 +122,7 @@ def create_app(config_class=ProductionConfig):
     @app.route('/api/login', methods=['POST'])
     def login():
         """
-        Route to log in a user and load their combatants.
+        Route to log in a user and load their recipe.
 
         Expected JSON Input:
             - username (str): The username of the user.
@@ -169,7 +169,7 @@ def create_app(config_class=ProductionConfig):
     @app.route('/api/logout', methods=['POST'])
     def logout():
         """
-        Route to log out a user and save their combatants to MongoDB.
+        Route to log out a user and save their recipes to MongoDB.
 
         Expected JSON Input:
             - username (str): The username of the user.
