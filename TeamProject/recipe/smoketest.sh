@@ -101,165 +101,118 @@ logout_user() {
 #
 ##############################################
 
-# Function to add a meal (combatant)
-# create_meal() {
-#   echo "Adding a combatant..."
-#   curl -s -X POST "$BASE_URL/create-meal" -H "Content-Type: application/json" \
-#     -d '{"meal":"Spaghetti", "cuisine":"Italian", "price":12.5, "difficulty":"MED"}' | grep -q '"status": "combatant added"'
-#   if [ $? -eq 0 ]; then
-#     echo "Combatant added successfully."
-#   else
-#     echo "Failed to add combatant."
-#     exit 1
-#   fi
-# }
+# Function to search for a meal
+search_meals() {
+  meal_name=$1
 
-# # Function to delete a meal by ID (1)
-# delete_meal_by_id() {
-#   echo "Deleting meal by ID (1)..."
-#   response=$(curl -s -X DELETE "$BASE_URL/delete-meal/1")
-#   if echo "$response" | grep -q '"status": "meal deleted"'; then
-#     echo "Meal deleted successfully by ID (1)."
-#   else
-#     echo "Failed to delete meal by ID (1)."
-#     exit 1
-#   fi
-# }
+  echo "Searching meals by name ($meal_name)..."
+  response=$(curl -s -X GET "$BASE_URL/search-meals?name=$meal_name")
 
-# # Function to get a meal by ID (1)
-# get_meal_by_id() {
-#   echo "Getting meal by ID (1)..."
-#   response=$(curl -s -X GET "$BASE_URL/get-meal-by-id/1")
-#   if echo "$response" | grep -q '"status": "success"'; then
-#     echo "Meal retrieved successfully by ID (1)."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Meal JSON (ID 1):"
-#       echo "$response" | jq .
-#     fi
-#   else
-#     echo "Failed to get meal by ID (1)."
-#     exit 1
-#   fi
-# }
+  if echo "$response" | grep -q '"meals"'; then
+    echo "Meals retrieved successfully for query: $meal_name."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Meals JSON:"
+      echo "$response" | jq .
+    fi
+  elif echo "$response" | grep -q '"error": "Meal name is required"'; then
+    echo "Error: Meal name is required. Please provide a valid meal name."
+    exit 1
+  else
+    echo "Failed to search meals for query: $meal_name."
+    echo "Response: $response"
+    exit 1
+  fi
+}
 
-# # Function to get a meal by name
-# get_meal_by_name() {
-#   echo "Getting meal by name (Spaghetti)..."
-#   response=$(curl -s -X GET "$BASE_URL/get-meal-by-name/Spaghetti")
-#   if echo "$response" | grep -q '"status": "success"'; then
-#     echo "Meal retrieved successfully by name (Spaghetti)."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Meal JSON (Spaghetti):"
-#       echo "$response" | jq .
-#     fi
-#   else
-#     echo "Failed to get meal by name (Spaghetti)."
-#     exit 1
-#   fi
-# }
 
-# ############################################
-# #
-# # Battle
-# #
-# ############################################
 
-# # Function to clear the combatants
-# clear_combatants() {
-#   echo "Clearing combatants..."
-#   curl -s -X POST "$BASE_URL/clear-combatants" -H "Content-Type: application/json" | grep -q '"status": "combatants cleared"'
-#   if [ $? -eq 0 ]; then
-#     echo "Combatants cleared successfully."
-#   else
-#     echo "Failed to clear combatants."
-#     exit 1
-#   fi
-# }
+# Function to get meal details
+get_meal_details() {
+  meal_id=$1
 
-# # Function to get the current list of combatants
-# get_combatants() {
-#   echo "Getting the current list of combatants..."
-#   response=$(curl -s -X GET "$BASE_URL/get-combatants")
+  echo "Fetching details for meal ID ($meal_id)..."
+  response=$(curl -s -X GET "$BASE_URL/meal-details/$meal_id")
 
-#   # Check if the response contains combatants or an empty list
-#   if echo "$response" | grep -q '"combatants"'; then
-#     echo "Combatants retrieved successfully."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Combatants JSON:"
-#       echo "$response" | jq .
-#     fi
-#   else
-#     echo "Failed to get combatants or no combatants found."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Error or empty response:"
-#       echo "$response" | jq .
-#     fi
-#     exit 1
-#   fi
-# }
+  if echo "$response" | grep -q '"meal"'; then
+    echo "Meal details retrieved successfully for ID: $meal_id."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Meal Details JSON:"
+      echo "$response" | jq .
+    fi
+  elif echo "$response" | grep -q '"error": "Meal not found"'; then
+    echo "Error: Meal not found for ID: $meal_id."
+    exit 1
+  else
+    echo "Failed to fetch details for meal ID: $meal_id."
+    echo "Response: $response"
+    exit 1
+  fi
+}
 
-# # Function to prepare a combatant for battle
-# prep_combatant() {
-#   echo "Preparing combatant for battle..."
-#   curl -s -X POST "$BASE_URL/prep-combatant" -H "Content-Type: application/json" \
-#     -d '{"meal":"Spaghetti"}' | grep -q '"status": "combatant prepared"'
-#   if [ $? -eq 0 ]; then
-#     echo "Combatant prepared successfully."
-#   else
-#     echo "Failed to prepare combatant."
-#     exit 1
-#   fi
-# }
+# Function to fetch random meal
+random_meal() {
+  echo "Fetching a random meal..."
+  response=$(curl -s -X GET "$BASE_URL/random-meal")
 
-# # Function to run a battle
-# run_battle() {
-#   echo "Running a battle..."
-#   curl -s -X GET "$BASE_URL/battle" | grep -q '"status": "battle complete"'
-#   if [ $? -eq 0 ]; then
-#     echo "Battle completed successfully."
-#   else
-#     echo "Failed to complete battle."
-#     exit 1
-#   fi
-# }
+  if echo "$response" | grep -q '"meal"'; then
+    echo "Random meal fetched successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Random Meal JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to fetch a random meal."
+    echo "Response: $response"
+    exit 1
+  fi
+}
 
-# ######################################################
-# #
-# # Leaderboard
-# #
-# ######################################################
+# Function to list meals by first letter
+meals_by_letter() {
+  letter=$1
 
-# # Function to get the leaderboard sorted by wins
-# get_leaderboard_wins() {
-#   echo "Getting leaderboard sorted by wins..."
-#   response=$(curl -s -X GET "$BASE_URL/leaderboard?sort=wins")
-#   if echo "$response" | grep -q '"status": "success"'; then
-#     echo "Leaderboard by wins retrieved successfully."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Leaderboard JSON (sorted by wins):"
-#       echo "$response" | jq .
-#     fi
-#   else
-#     echo "Failed to get leaderboard by wins."
-#     exit 1
-#   fi
-# }
+  echo "Fetching meals starting with the letter ($letter)..."
+  response=$(curl -s -X GET "$BASE_URL/meals-by-letter/$letter")
 
-# # Function to get the leaderboard sorted by win percentage
-# get_leaderboard_win_pct() {
-#   echo "Getting leaderboard sorted by win percentage..."
-#   response=$(curl -s -X GET "$BASE_URL/leaderboard?sort=win_pct")
-#   if echo "$response" | grep -q '"status": "success"'; then
-#     echo "Leaderboard by win percentage retrieved successfully."
-#     if [ "$ECHO_JSON" = true ]; then
-#       echo "Leaderboard JSON (sorted by win percentage):"
-#       echo "$response" | jq .
-#     fi
-#   else
-#     echo "Failed to get leaderboard by win percentage."
-#     exit 1
-#   fi
-# }
+  if echo "$response" | grep -q '"meals"'; then
+    echo "Meals starting with the letter $letter retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Meals JSON:"
+      echo "$response" | jq .
+    fi
+  elif echo "$response" | grep -q '"error": "Only a single letter is allowed"'; then
+    echo "Error: Only a single letter is allowed. Invalid input: $letter."
+    exit 1
+  else
+    echo "Failed to fetch meals starting with the letter: $letter."
+    echo "Response: $response"
+    exit 1
+  fi
+}
+
+
+# Function to filter meals by ingredients
+meals_by_ingredient() {
+  ingredient=$1
+
+  echo "Fetching meals containing the ingredient ($ingredient)..."
+  response=$(curl -s -X GET "$BASE_URL/meals-by-ingredient?ingredient=$ingredient")
+
+  if echo "$response" | grep -q '"meals"'; then
+    echo "Meals containing the ingredient $ingredient retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Meals JSON:"
+      echo "$response" | jq .
+    fi
+  elif echo "$response" | grep -q '"error": "Ingredient is required"'; then
+    echo "Error: Ingredient is required. Please provide a valid ingredient."
+    exit 1
+  else
+    echo "Failed to fetch meals containing the ingredient: $ingredient."
+    echo "Response: $response"
+    exit 1
+  fi
+}
 
 # Function to initialize the database
 init_db() {
@@ -284,21 +237,11 @@ check_health
 init_db
 create_user
 login_user
-# create_meal
-# clear_combatants
-# prep_combatant
-# prep_combatant
-# get_combatants
-# run_battle
-# prep_combatant
-# run_battle
-# prep_combatant
-# run_battle
-# get_leaderboard_wins
-# get_leaderboard_win_pct
 logout_user
-# get_meal_by_name
-# get_meal_by_id
-# delete_meal_by_id
+search_meals
+get_meal_details
+random_meal
+meals_by_letter
+meals_by_ingredient
 
 echo "All tests passed successfully!"
