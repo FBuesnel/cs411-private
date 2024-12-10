@@ -1,9 +1,6 @@
 # Recipe Application Dashboard
-What the application does at a high level?
 ## Overview 
-The Recipe Dashboard is a web-based application designed to provide users with easy
-access to recipe information. 
-
+The Recipe Dashboard is a web-based application designed to provide users with easy access to recipe information. This application allows users to set favorite meals and quickly search for, filter, and explore recipes based on ingredients, categories, or meal names. The Recipe Dashboard aims to deliver a personalized recipe discovery experience, making it easier for users to find the most relevant recipes based on their preferences and dietary needs while allowing for the creation of shopping lists to easily buy all the ingredients.
 
 **API: Recipe API** - TheMealDB
 #### Features
@@ -15,7 +12,7 @@ general weather conditions.
 5. Add their own meals to the database:
 6. Make a shopping list:
 
-Route Description:
+## Route Description:
 
 Route: /create-account
   ● Request Type: POST
