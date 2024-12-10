@@ -34,6 +34,9 @@ class RecipeAPI:
         except requests.RequestException as e:
             logger.error(f"Error fetching meals by name: {e}")
             return []
+        except Exception as e:
+            logger.error(f"Unexpected error during meal search: {e}")
+            return []
 
     def get_meal_details(self, meal_id):
         """
@@ -49,7 +52,10 @@ class RecipeAPI:
             logger.info(f"Meal details for ID {meal_id} fetched successfully.")
             return data.get("meals", [])[0] if data.get("meals") else None
         except requests.RequestException as e:
-            logger.error(f"Error fetching meal details: {e}")
+            logger.error(f"Error fetching meal details for ID {meal_id}: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error during meal details retrieval: {e}")
             return None
 
     def get_random_meal(self):
@@ -67,6 +73,9 @@ class RecipeAPI:
         except requests.RequestException as e:
             logger.error(f"Error fetching random meal: {e}")
             return None
+        except Exception as e:
+            logger.error(f"Unexpected error during random meal retrieval: {e}")
+            return None
 
     def list_meals_by_first_letter(self, letter):
         """
@@ -82,7 +91,10 @@ class RecipeAPI:
             logger.info(f"Meals starting with letter '{letter}' fetched successfully.")
             return data.get("meals", [])
         except requests.RequestException as e:
-            logger.error(f"Error listing meals by first letter: {e}")
+            logger.error(f"Error listing meals by first letter '{letter}': {e}")
+            return []
+        except Exception as e:
+            logger.error(f"Unexpected error during meal listing by first letter '{letter}': {e}")
             return []
 
     def filter_meals_by_ingredient(self, ingredient):
@@ -99,5 +111,8 @@ class RecipeAPI:
             logger.info(f"Meals filtered by ingredient '{ingredient}' fetched successfully.")
             return data.get("meals", [])
         except requests.RequestException as e:
-            logger.error(f"Error filtering meals by ingredient: {e}")
+            logger.error(f"Error filtering meals by ingredient '{ingredient}': {e}")
+            return []
+        except Exception as e:
+            logger.error(f"Unexpected error during filtering meals by ingredient '{ingredient}': {e}")
             return []

@@ -1,6 +1,6 @@
 import logging
 from typing import List, Dict, Optional
-from themealdb_model import RecipeAPI  # Import the RecipeAPI
+from recipe.models.themealdb_model import RecipeAPI  # Import the RecipeAPI
 
 from recipe.utils.logger import configure_logger
 

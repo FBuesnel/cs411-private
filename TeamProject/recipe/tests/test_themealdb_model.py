@@ -7,7 +7,7 @@ def recipe_api():
     """Fixture to provide a new instance of RecipeAPI for each test."""
     return RecipeAPI()
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_search_meals_by_name(mock_get, recipe_api):
     """Test searching meals by name."""
     mock_get.return_value.status_code = 200
@@ -17,7 +17,7 @@ def test_search_meals_by_name(mock_get, recipe_api):
     assert len(result) == 1
     assert result[0]["strMeal"] == "Arrabiata"
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_get_meal_details(mock_get, recipe_api):
     """Test fetching meal details by ID."""
     mock_get.return_value.status_code = 200
@@ -27,7 +27,7 @@ def test_get_meal_details(mock_get, recipe_api):
     assert result is not None
     assert result["strMeal"] == "Arrabiata"
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_get_random_meal(mock_get, recipe_api):
     """Test fetching a random meal."""
     mock_get.return_value.status_code = 200
@@ -37,7 +37,7 @@ def test_get_random_meal(mock_get, recipe_api):
     assert result is not None
     assert result["strMeal"] == "Random Meal"
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_list_meals_by_first_letter(mock_get, recipe_api):
     """Test listing meals by first letter."""
     mock_get.return_value.status_code = 200
@@ -47,7 +47,7 @@ def test_list_meals_by_first_letter(mock_get, recipe_api):
     assert len(result) == 1
     assert result[0]["strMeal"] == "Apple Pie"
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_filter_meals_by_ingredient(mock_get, recipe_api):
     """Test filtering meals by ingredient."""
     mock_get.return_value.status_code = 200
@@ -57,13 +57,16 @@ def test_filter_meals_by_ingredient(mock_get, recipe_api):
     assert len(result) == 1
     assert result[0]["strMeal"] == "Chicken Soup"
 
-@patch("themealdb_model.requests.get")
+@patch("recipe.models.themealdb_model.requests.get")
 def test_handle_api_errors(mock_get, recipe_api):
     """Test handling API errors gracefully."""
+    # Set the mock to raise an exception when it is called
     mock_get.side_effect = Exception("API error")
     
+    # Test that each method handles the error gracefully
     assert recipe_api.search_meals_by_name("NonExistent") == []
     assert recipe_api.get_meal_details("9999") is None
     assert recipe_api.get_random_meal() is None
     assert recipe_api.list_meals_by_first_letter("Z") == []
     assert recipe_api.filter_meals_by_ingredient("unknown") == []
+

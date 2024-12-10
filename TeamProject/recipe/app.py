@@ -11,8 +11,6 @@ from recipe.models.mongo_session_model import login_user, logout_user
 from recipe.models.user_model import Users
 from recipe.models.recipe_model import RecipeManager
 
-recipe_api = RecipeAPI()
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -24,7 +22,7 @@ def create_app(config_class=ProductionConfig):
     with app.app_context():
         db.create_all()  # Recreate all tables
 
-    # battle_model = BattleModel()
+    recipe_api = RecipeAPI()
 
     ####################################################
     #
