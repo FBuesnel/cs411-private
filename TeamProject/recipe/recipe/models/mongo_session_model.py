@@ -74,5 +74,5 @@ def logout_user(user_id: int, RecipeManager) -> None:
         raise ValueError(f"User with ID {user_id} not found for logout.")
 
     logger.info("recipes successfully saved for user ID %d. Clearing BattleModel recipes.", user_id)
-    RecipeManager.clear_recipes()
+    RecipeManager.clear_shopping_list()
     logger.info("BattleModel recipes cleared for user ID %d.", user_id)
