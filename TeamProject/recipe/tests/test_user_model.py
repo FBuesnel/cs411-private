@@ -1,7 +1,33 @@
 import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from recipe.models.user_model import Users
+from recipe.db import db as _db
 
+# Initialize the database
+@pytest.fixture(scope='session')
+def engine():
+    return create_engine('sqlite:///:memory:')
+
+@pytest.fixture(scope='session')
+def tables(engine):
+    _db.metadata.create_all(engine)
+    yield
+    _db.metadata.drop_all(engine)
+
+@pytest.fixture(scope='function')
+def session(engine, tables):
+    connection = engine.connect()
+    transaction = connection.begin()
+    session = scoped_session(sessionmaker(bind=connection))
+    _db.session = session
+
+    yield session
+
+    session.remove()
+    transaction.rollback()
+    connection.close()
 
 @pytest.fixture
 def sample_user():
@@ -9,7 +35,6 @@ def sample_user():
         "username": "testuser",
         "password": "securepassword123"
     }
-
 
 ##########################################################
 # User Creation
@@ -65,7 +90,6 @@ def test_update_password_user_not_found(session):
     with pytest.raises(ValueError, match="User nonexistentuser not found"):
         Users.update_password("nonexistentuser", "newpassword")
 
-
 ##########################################################
 # Delete User
 ##########################################################
@@ -87,24 +111,14 @@ def test_delete_user_not_found(session):
 ##########################################################
 
 def test_get_id_by_username(session, sample_user):
-    """
-    Test successfully retrieving a user's ID by their username.
-    """
-    # Create a user in the database
+    """Test successfully retrieving a user's ID by their username."""
     Users.create_user(**sample_user)
-
-    # Retrieve the user ID
     user_id = Users.get_id_by_username(sample_user["username"])
-
-    # Verify the ID is correct
     user = session.query(Users).filter_by(username=sample_user["username"]).first()
     assert user is not None, "User should exist in the database."
     assert user.id == user_id, "Retrieved ID should match the user's ID."
 
-
 def test_get_id_by_username_user_not_found(session):
-    """
-    Test failure when retrieving a non-existent user's ID by their username.
-    """
+    """Test failure when retrieving a non-existent user's ID by their username."""
     with pytest.raises(ValueError, match="User nonexistentuser not found"):
         Users.get_id_by_username("nonexistentuser")
