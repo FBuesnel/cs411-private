@@ -104,6 +104,13 @@ class RecipeManager:
         """
         logger.info("Retrieved shopping list with %d items.", len(self.shopping_list))
         return self.shopping_list
+    
+    def clear_shopping_list(self):
+        """
+        Clears the list of shopping list.
+        """
+        logger.info("Clearing the combatants list.")
+        self.shopping_list.clear()
 
     @staticmethod
     def extract_ingredients(meal_data: dict) -> List[str]:
