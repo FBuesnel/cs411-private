@@ -9,6 +9,7 @@ from recipe.models.themealdb_model import RecipeAPI
 from recipe.models.recipe_model import Meal
 from recipe.models.mongo_session_model import login_user, logout_user
 from recipe.models.user_model import Users
+from recipe.models.recipe_model import RecipeManager
 
 recipe_api = RecipeAPI()
 
@@ -156,7 +157,7 @@ def create_app(config_class=ProductionConfig):
             user_id = Users.get_id_by_username(username)
 
             # Load user's combatants into the battle model
-            login_user(user_id, battle_model)
+            login_user(user_id, RecipeManager)
 
             app.logger.info("User %s logged in successfully.", username)
             return jsonify({"message": f"User {username} logged in successfully."}), 200
@@ -195,7 +196,7 @@ def create_app(config_class=ProductionConfig):
             user_id = Users.get_id_by_username(username)
 
             # Save user's combatants and clear the battle model
-            logout_user(user_id, battle_model)
+            logout_user(user_id, RecipeManager)
 
             app.logger.info("User %s logged out successfully.", username)
             return jsonify({"message": f"User {username} logged out successfully."}), 200
