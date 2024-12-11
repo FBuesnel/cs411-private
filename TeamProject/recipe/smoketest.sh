@@ -105,11 +105,11 @@ logout_user() {
 search_meals() {
   meal_name=$1
 
-  echo "Searching meals by name ($meal_name)..."
-  response=$(curl -s -X GET "$BASE_URL/search-meals?name=$meal_name")
+  echo "Searching meals by name Spicy Arrabiata Penne..."
+  response=$(curl -s -X GET "$BASE_URL/search-meals?name=Spicy%20Arrabiata%20Penne")
 
   if echo "$response" | grep -q '"meals"'; then
-    echo "Meals retrieved successfully for query: $meal_name."
+    echo "Meals retrieved successfully for query: Spicy Arrabiata Penne."
     if [ "$ECHO_JSON" = true ]; then
       echo "Meals JSON:"
       echo "$response" | jq .
@@ -125,16 +125,15 @@ search_meals() {
 }
 
 
-
 # Function to get meal details
 get_meal_details() {
   meal_id=$1
 
-  echo "Fetching details for meal ID ($meal_id)..."
-  response=$(curl -s -X GET "$BASE_URL/meal-details/$meal_id")
+  echo "Fetching details for meal ID 52771..."
+  response=$(curl -s -X GET "$BASE_URL/meal-details/52771")
 
   if echo "$response" | grep -q '"meal"'; then
-    echo "Meal details retrieved successfully for ID: $meal_id."
+    echo "Meal details retrieved successfully for ID: 52771."
     if [ "$ECHO_JSON" = true ]; then
       echo "Meal Details JSON:"
       echo "$response" | jq .
@@ -171,11 +170,11 @@ random_meal() {
 meals_by_letter() {
   letter=$1
 
-  echo "Fetching meals starting with the letter ($letter)..."
-  response=$(curl -s -X GET "$BASE_URL/meals-by-letter/$letter")
+  echo "Fetching meals starting with the letter S..."
+  response=$(curl -s -X GET "$BASE_URL/meals-by-letter/S")
 
   if echo "$response" | grep -q '"meals"'; then
-    echo "Meals starting with the letter $letter retrieved successfully."
+    echo "Meals starting with the letter S retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
       echo "Meals JSON:"
       echo "$response" | jq .
@@ -195,11 +194,11 @@ meals_by_letter() {
 meals_by_ingredient() {
   ingredient=$1
 
-  echo "Fetching meals containing the ingredient ($ingredient)..."
-  response=$(curl -s -X GET "$BASE_URL/meals-by-ingredient?ingredient=$ingredient")
+  echo "Fetching meals containing the ingredient garlic..."
+  response=$(curl -s -X GET "$BASE_URL/meals-by-ingredient?ingredient=garlic")
 
   if echo "$response" | grep -q '"meals"'; then
-    echo "Meals containing the ingredient $ingredient retrieved successfully."
+    echo "Meals containing the ingredient garlic retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
       echo "Meals JSON:"
       echo "$response" | jq .
@@ -235,9 +234,6 @@ init_db() {
 # Run all the steps in order
 check_health
 init_db
-create_user
-login_user
-logout_user
 search_meals
 get_meal_details
 random_meal

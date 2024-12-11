@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Install SQLite3
 RUN apt-get update && apt-get install -y sqlite3
 
+# Create the database directory with proper permissions
+RUN mkdir -p /app/db && chmod -R 755 /app/db
+
 # Define a volume for persisting the database
 VOLUME ["/app/db"]
 
